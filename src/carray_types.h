@@ -1,4 +1,4 @@
-/* Autor: mogria, see README.txt & license.txt for more info */
+/* Autor: mogria, see README & license.txt for more info */
 
 #ifdef _CARRAY_TYPES_H
 #define _CARRAY_TYPES_H 1

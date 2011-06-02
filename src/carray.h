@@ -1,9 +1,10 @@
-/* Autor: mogria, see README.txt & license.txt for more info */
+/* Autor: mogria, see README & license.txt for more info */
 
 #ifndef _CARRAY_H
 #define _CARRAY_H
-#include <stdio.h> //printf(), puts()
-#include <stdlib.h> //malloc(), realloc(), free()
+#include <stdio.h> /* printf(), puts() */
+#include <stdlib.h> /* malloc(), realloc(), free() */
+#include "carray_types.h"
 
 /* initalisize Array */
 int initArray(Array *array);
@@ -68,21 +69,26 @@ Call tbis function directly after definition!
 Example: 
 Array a;
 initArray(&a);
+OR:
+Array a = initArray(NULL);
 */
-int initArray(Array *array) {
-  array->elements = 0;
+Array initArray(Array *array) {
+  Array ret_array;
+  if(array == NULL) {
+    array = &ret_array;
+  }
   array->last = NULL;
   array->current = NULL;
   array->first = malloc(0);
-  return 0;
+  array->elements = 0;
+  return array;
 }
 
 /* Call this function if you don't need your
 Array anymore
 Example:
-Array a;
-initArray(&a);
-//.. some code 
+Array a = initArray(NULL);
+//.. some code
 ArrayFree(&a);
 */
 int ArrayFree(Array *array) {
@@ -93,11 +99,10 @@ int ArrayFree(Array *array) {
 /* Call this function if you want to 
 reinitalize your Array
 Example:
-Array a;
-initArray(&a);
-//.. some code 
+Array a = initArray(NULL);
+// .. some code
 ArrayReset(&a);
-//.. some code 
+// .. some code
 ArrayFree(&a);
 */
 int ArrayReset(Array *array) {
@@ -106,31 +111,47 @@ int ArrayReset(Array *array) {
   return 0;
 }
 
-/* Get the key of the current ArrayElement */
+/* Get the key of the current ArrayElement
+Example:
+int i = 5;
+Array a = initArray(NULL);
+ArrayAppend(&a, &i);
+ArrayRewind(&a);
+ArrayKey(&a); // will return 0
+*/
 int ArrayKey(Array *array) {
   return array->current->key;
 }
 
+/* Append an element at the end of the array
+Example:
+int i = 5;
+Array a = initArray(&a);
+ArrayAppend(&a, &i); // the array has now 1 element 
+*/
 int ArrayAppend(Array *array, void *value) {
   unsigned int index_save = array->elements;
-  array->first = realloc(array->first, (1 + array->elements) * sizeof(ArrayElement));
-  if(array->first == NULL) {
-    //puts("not enough memory!");
+  array->first = realloc(array->first,
+                   (1 + array->elements) * sizeof(ArrayElement)
+  );
+  /* if(array->first == NULL) {
+    puts("not enough memory!");
   }
-  //puts("enough memory");
+  puts("enough memory");
+  */
   ArrayElement *ptr_element = array->first + index_save;
   ptr_element->save_index = index_save;
   ptr_element->value = value;
   ptr_element->next = NULL;
-  //printf("if(array->elements(%i) > 0) {\n", array->elements);
+  /* printf("if(array->elements(%i) > 0) {\n", array->elements); */
   if(array->elements > 0) {
-    //puts("if");
+    /* puts("if"); */
     array->last->next = ptr_element;
     ptr_element->prev = array->last;
     ptr_element->key = array->last->key + 1;
     array->last = ptr_element;
   } else {
-    //puts("else");
+    /* puts("else"); */
     array->current = array->last = ptr_element;
     ptr_element->prev = NULL;
     ptr_element->key = 0;
@@ -139,6 +160,14 @@ int ArrayAppend(Array *array, void *value) {
   return 0;
 }
 
+/* Remove the current element in the Array
+Example:
+int i = 5;
+Array a = initArray(&a);
+ArrayAppend(&a, &i); // the array has now 1 element
+ArrayRewind(&a);
+ArrayRemove(&a);  // the array is now empty
+*/
 int ArrayRemove(Array *array) {
   int ret = 0;
   if(ArrayValid(array)) {
@@ -160,9 +189,9 @@ int ArrayRemove(Array *array) {
             ptr_current,
           array->first);
     */
-    //printf("shift size: %i\n", shift_size);
+    /* printf("shift size: %i\n", shift_size); */
     while(i < shift_size - 1) {
-      //printf("shift #%i : %p < %p\n", i, ptr_current + i, ptr_current + i + 1);
+      /* printf("shift #%i : %p < %p\n", i, ptr_current + i, ptr_current + i + 1); */
       *(ptr_current + i) = *(ptr_current + i + 1);
       (ptr_current + i)->save_index--;
       (ptr_current + i)->prev--;
@@ -181,13 +210,17 @@ void *ArrayGet(Array *array, int key) {
     return (ArraySeekByKey(array, key) == 0) ? ArrayCurrent(array) : NULL;
 }
 
+/* set the current element to an anthoer value
+Example:
+int i = 5;
+int i2 = 3;
+Array a = initArray(&a);
+ArrayAppend(&a, &i); // the array has now 1 element
+ArrayRewind(&a);
+ArraySet(&a, &i2); // the first element contains now 3
+*/
 int ArraySet(Array *array, void *value) {
-  if(ArrayValid(array)) {
-    array->current->value = value;
-    return 0;
-  } else {
-    return 1;
-  }
+  array->current->value = value;
 }
 
 int ArraySeekByKey(Array *array, int key) {
