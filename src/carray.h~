@@ -319,10 +319,5 @@ void DebugPrintArray(Array *array) {
   }
 }
 
-/* C++ Support */
-#ifdef __cplusplus
-} /* extern "C" { */
-#endif
-
 #endif /* _CARRAY_H */
 
