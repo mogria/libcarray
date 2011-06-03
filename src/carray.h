@@ -34,10 +34,10 @@ void ArrayNext(Array *array);
 void *ArrayCurrent(Array *array);
 
 /* set the current element to the last element */
-int ArrayLast(Array *array);
+void ArrayLast(Array *array);
 
 /* set the current element to the last element */
-int ArrayRewind(Array *array);
+void ArrayRewind(Array *array);
 
 /* returns the amount of elements in the Array */
 int ArrayCount(Array *array);
@@ -70,14 +70,20 @@ int ArrayReset(Array *array);
 /* free the array */
 int ArrayFree(Array *array);
 
-/* initalize the Array
-Call tbis function directly after definition!
-Example: 
-Array a;
-initArray(&a);
-OR:
-Array a = initArray(NULL);
-*/
+/** @brief initialize the Array
+ *
+ * Call tbis function directly after definition!
+ * Example:\n
+ * Array a;\n
+ * initArray(&a);\n
+ * Example:\n
+ * Array a = initArray(NULL);\n
+ *
+ * @return <Array> initialized Array
+ * @param <Array *> pointer to Array which should be initialized, or NULL
+ * @see ArrayFree()
+ * @see ArrayReset()
+ */
 Array initArray(Array *array) {
   Array ret_array;
   if(array == NULL) {
@@ -90,51 +96,74 @@ Array initArray(Array *array) {
   return array;
 }
 
-/* Call this function if you don't need your
-Array anymore
-Example:
-Array a = initArray(NULL);
-//.. some code
-ArrayFree(&a);
-*/
+/** @brief Call this function if you don't need your Array anymore
+ *
+ * Example:\n
+ * Array a = initArray(NULL);\n
+ * //.. some code\n
+ * ArrayFree(&a);\n
+ *
+ * @param <Array *> pointer to array which will be freed
+ * @return <int> errcode
+ * @see initArray()
+ * @see ArrayReset()
+ */
 int ArrayFree(Array *array) {
   free(array->first);
   return 0;
 }
 
-/* Call this function if you want to 
-reinitalize your Array
-Example:
-Array a = initArray(NULL);
-// .. some code
-ArrayReset(&a);
-// .. some code
-ArrayFree(&a);
-*/
+/** @brief Call this function if you want to reinitalize your Array
+ *
+ * Example:\n
+ * Array a = initArray(NULL);\n
+ * // .. some code\n
+ * ArrayReset(&a);\n
+ * // .. some code\n
+ * ArrayFree(&a);\n
+ *
+ * @return <int> errcode
+ * @param <Array *> pointer to Array wich will be reseted
+ * @see initArray()
+ * @see ArrayFree()
+ */
 int ArrayReset(Array *array) {
   ArrayFree(array);
   initArray(array);
   return 0;
 }
 
-/* Get the key of the current ArrayElement
-Example:
-int i = 5;
-Array a = initArray(NULL);
-ArrayAppend(&a, &i);
-ArrayRewind(&a);
-ArrayKey(&a); // will return 0
-*/
+/** @brief Get the key of the current ArrayElement 
+ *
+ * Example:\n
+ * int i = 5;\n
+ * Array a = initArray(NULL);\n
+ * ArrayAppend(&a, &i);\n
+ * ArrayRewind(&a);\n
+ * ArrayKey(&a); // will return 0\n
+ *
+ * @return <int> key of the current Array Element
+ * @param <Array *> Pointer to the Array 
+ * @see ArrayCurrent()
+ * @see ArrayGet()
+ */
 int ArrayKey(Array *array) {
   return array->current->key;
 }
 
-/* Append an element at the end of the array
-Example:
-int i = 5;
-Array a = initArray(&a);
-ArrayAppend(&a, &i); // the array has now 1 element 
-*/
+/** @brief Append an element at the end of the array
+ *
+ * Example:\n
+ * int i = 5;\n
+ * Array a = initArray(&a);\n
+ * ArrayAppend(&a, &i); // the array has now 1 element\n
+ *
+ * @return <int> errcode
+ * @param <Array *> Pointer to the Array
+ * @param <void *> Pointer to the value
+ * @see ArrayRemove()
+ * @see ArraySet()
+ */
 int ArrayAppend(Array *array, void *value) {
   unsigned int index_save = array->elements;
   array->first = realloc(array->first,
@@ -166,14 +195,19 @@ int ArrayAppend(Array *array, void *value) {
   return 0;
 }
 
-/* Remove the current element in the Array
-Example:
-int i = 5;
-Array a = initArray(&a);
-ArrayAppend(&a, &i); // the array has now 1 element
-ArrayRewind(&a);
-ArrayRemove(&a);  // the array is now empty
-*/
+/** @brief Remove the current element in the Array
+ *
+ * Example:\n
+ * int i = 5;\n
+ * Array a = initArray(&a);\n
+ * ArrayAppend(&a, &i); // the array has now 1 element\n
+ * ArrayRewind(&a);\n
+ * ArrayRemove(&a);  // the array is now empty\n
+ *
+ * @return errcode
+ * @param <Array *> Pointer to the Array
+ * @see ArrayAppend()
+ */
 int ArrayRemove(Array *array) {
   int ret = 0;
   if(ArrayValid(array)) {
@@ -195,9 +229,7 @@ int ArrayRemove(Array *array) {
             ptr_current,
           array->first);
     */
-    /* printf("shift size: %i\n", shift_size); */
     while(i < shift_size - 1) {
-      /* printf("shift #%i : %p < %p\n", i, ptr_current + i, ptr_current + i + 1); */
       *(ptr_current + i) = *(ptr_current + i + 1);
       (ptr_current + i)->save_index--;
       (ptr_current + i)->prev--;
@@ -205,30 +237,60 @@ int ArrayRemove(Array *array) {
         (ptr_current + i)->next--;
       i++;
     }
-    array->first = realloc(array->first, sizeof(ArrayElement) * --array->elements);
+    array->first =
+      realloc(array->first, sizeof(ArrayElement) * --array->elements);
   } else {
     ret = 1;
   }
   return ret;
 }
 
+/** @brief get an element, specified by the key, from the array
+ *
+ * Example:\n
+ * int i = 5;\n
+ * Array a = initArray(&a);\n
+ * ArrayAppend(&a, &i);\n\n
+ * ArrayGet(&a, 0); //returns a pointer to the element with the key 0
+ *
+ * @param <Array *> Pointer to the Array
+ * @param <int> key of the element in array
+ * @return <void *> Pointer to the element , or NULL if it does'nt exist
+ * @see ArrayCurrent()
+ * @see ArraySet()
+ */
 void *ArrayGet(Array *array, int key) {
     return (ArraySeekByKey(array, key) == 0) ? ArrayCurrent(array) : NULL;
 }
 
-/* set the current element to an anthoer value
-Example:
-int i = 5;
-int i2 = 3;
-Array a = initArray(&a);
-ArrayAppend(&a, &i); // the array has now 1 element
-ArrayRewind(&a);
-ArraySet(&a, &i2); // the first element contains now 3
-*/
+/** @brief Set the current element to an anthoer value
+ *
+ * Example:\n
+ * int i = 5;\n
+ * int i2 = 3;\n
+ * Array a = initArray(&a);\n
+ * ArrayAppend(&a, &i); // the array has now 1 element\n
+ * ArrayRewind(&a);\n
+ * ArraySet(&a, &i2); // the first element contains now 3\n
+ *
+ * @todo add param "key", write function ArraySetCurrent
+ */
 int ArraySet(Array *array, void *value) {
   array->current->value = value;
 }
-
+ 
+/** @brief Select current element by Key
+ *
+ * @param <Array *> Pointer to the Array
+ * @param <int> key
+ * @return <int> errcode
+ * @see ArrayGet()
+ * @see ArrayNext()
+ * @see ArrayPrev()
+ * @see ArrayRewind()
+ * @see ArrayLast()
+ * @see ArrayMove()
+ */
 int ArraySeekByKey(Array *array, int key) {
   ArrayElement *ptr_before = array->current;
   int found = 0;
@@ -248,38 +310,100 @@ int ArraySeekByKey(Array *array, int key) {
   return 0;
 }
 
+/** @brief get number of elements in Array
+ *
+ * @param <Array *> Pointer to the Array
+ * @return <int> num of elements
+ */
 int ArrayCount(Array *array) {
   return array->elements;
 }
 
+/** @brief checks if the current element of the array is in a valid position
+ *
+ * @param <Array *> pointer to the Array
+ * @return <int> 0 - not valid, !0 - valid
+ * @see ArrayRewind()
+ * @see ArrayLast()
+ * @see ArrayNext()
+ * @see ArrayPrev()
+ */
 int ArrayValid(Array *array) {
   return array->current != NULL;
 }
 
-int ArrayRewind(Array *array) {
+/** @brief Rewind Array pointer to first element of the Array
+ *
+ * @param <Array *> Pointer to the Array
+ * @see ArrayValid()
+ * @see ArrayLast()
+ * @see ArrayNext()
+ * @see ArrayPrev()
+ */
+void ArrayRewind(Array *array) {
   if(array->elements > 0) {
     array->current = array->first;
   }
+  return;
 }
 
-int ArrayLast(Array *array) {
+/** @brief Set the Array pointer to the last element of the Array
+ *
+ * @param <Array *> Pointer to the Array
+ * @see ArrayValid()
+ * @see ArrayRewind()
+ * @see ArrayNext()
+ * @see ArrayPrev()
+ */
+void ArrayLast(Array *array) {
   if(array->elements > 0) {
     array->current = array->last;
   }
+  return;
 }
 
+/** @brief get the pointer to the value of the current element
+ *
+ * @param <Array *> Pointer to the Array
+ * @return <void *> void pointer to the value
+ * @see ArrayGet()
+ */
 void *ArrayCurrent(Array *array) {
   return array->current->value;
 }
 
+/** @brief Move element pointer to next element
+ * @param <Array *> Pointer to the Array
+ * @see ArrayValid()
+ * @see ArrayLast()
+ * @see ArrayRewind()
+ * @see ArrayPrev()
+ */
 void ArrayNext(Array *array) {
     array->current = array->current->next;
 }
 
+/** @brief move element pointer to previous element
+ * @param <Array *> Pointer to the Array
+ * @see ArrayValid()
+ * @see ArrayLast()
+ * @see ArrayNext()
+ * @see ArrayRewind()
+ */
 void ArrayPrev(Array *array) {
     array->current = array->current->prev;
 }
 
+/** @brief move the element pointer 
+ *
+ * @param <int> move amount
+ * @param <Array *> Pointer to the Array
+ * @return <int> Valid position in Array after Operation
+ * @see ArrayNext()
+ * @see ArrayPrev()
+ * @see ArrayRewind()
+ * @see ArrayLast()
+ */
 int ArrayMove(Array *array, int by) {
   void (*ptr_move_func)(Array *array);
   int i;

@@ -19,7 +19,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">libcarray&#160;<span id="projectnumber">1</span></div>
+   <div id="projectname">libcarray</div>
   </td>
  </tr>
  </tbody>
@@ -28,6 +28,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li id="searchli">
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -50,6 +51,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li class="current"><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
 </div>
@@ -58,9 +60,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <h1>File List</h1>  </div>
 </div>
 <div class="contents">
-<div class="textblock">Here is a list of all documented files with brief descriptions:</div><table>
-  <tr><td class="indexkey">src/<b>carray.h</b> <a href="carray_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
-  <tr><td class="indexkey">src/<b>carray_types.h</b> <a href="carray__types_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+<div class="textblock">Here is a list of all files with brief descriptions:</div><table>
+  <tr><td class="indexkey">src/<a class="el" href="carray_8h.html">carray.h</a> <a href="carray_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
+  <tr><td class="indexkey">src/<a class="el" href="carray__types_8h.html">carray_types.h</a> <a href="carray__types_8h_source.html">[code]</a></td><td class="indexvalue"></td></tr>
 </table>
 </div>
 <!--- window showing the filter options -->
@@ -68,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-</div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -77,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Jun 2 2011 20:19:48 for libcarray by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Jun 4 2011 00:07:19 for libcarray by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>
