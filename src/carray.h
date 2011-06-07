@@ -421,17 +421,26 @@ int ArrayMove(Array *array, int by) {
 }
 
 /* @TODO: zahlen und co. richtig ausgeben */
-int ArrayPrint(Array *array) {
-  ArrayElement *ptr = array->current;
+
+/** @brief Print the Array
+ *
+ * @param <Array *> the Array
+ * @return <void>
+ */
+vid ArrayPrint(Array *array) {
+  current;
   puts("\nArray (");
   for(ArrayRewind(array); ArrayValid(array); ArrayNext(array)){
     printf("\t%i => %i\n", ArrayKey(array), *(int *)ArrayCurrent(array));
   }
   array->current = ptr;
   puts(")");
-  return 0;
 }
 
+/** @brief print all the memory needed by the Array
+ * @param <Array *> the Array
+ * @return <void>
+ */
 void DebugPrintArray(Array *array) {
   int i;
   printf("elements: %i\n", array->elements);
