@@ -282,7 +282,7 @@ int ArraySet(Array *array, void *value) {
 /** @brief Select current element by Key
  *
  * @param array Pointer to the Array
- * @param key Search
+ * @param int key
  * @return int errcode
  * @see ArrayGet()
  * @see ArrayNext()
