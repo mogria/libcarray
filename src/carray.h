@@ -18,6 +18,9 @@ int initArray(Array *array);
 /* Remove current element of the Array */
 int ArrayRemove(Array *array);
 
+/* Removes the first element and returns it */
+void *ArrayShift(Array *array);
+
 /* Print the Array to stdout */
 int ArrayPrint(Array *array);
 
@@ -452,6 +455,29 @@ void DebugPrintArray(Array *array) {
   }
 }
 
+/** @brief Removes the first Element and returns the value of it
+ *
+ * @param array Pointer to the Array
+ * @return void * Pointer to the value of the Removed Element
+ * @TODO test this function
+ */
+void *ArrayShift(Array *array) {
+  void *ret = ArrayCurrent(array);
+  ArrayElement *curr;
+  if(array->current == array->first) {
+    if(array->first->next == NULL) {
+      curr = NULL;
+    } else {
+      curr = array->first->next;
+    }
+  } else {
+    curr = array->current;
+  }
+  ArrayRewind(array);
+  ArrayRemove(array);
+  array->current = curr;
+  return ret;
+}
 /* C++ Support */
 #ifdef __cplusplus
 } /* extern "C" { */
